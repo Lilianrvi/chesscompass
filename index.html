@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Compass - L'Architecture de l'Esprit</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    
+    <style>
+        /* --- Import des Polices --- */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;500&display=swap');
+
+        /* --- Style Général --- */
+        :root {
+            --bg-color: #121212;
+            --text-color: #EAEAEA;
+            --accent-color: #C0A062;
+            --card-bg-color: #1d1d1d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        section {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .hidden {
+            display: none;
+            opacity: 0;
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        .action-btn {
+            background: none;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 15px 35px;
+            font-size: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .action-btn:hover {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 25px rgba(192, 160, 98, 0.5);
+        }
+
+        /* --- Section Accueil --- */
+        #accueil .content {
+            position: relative;
+            z-index: 10;
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        /* --- Section Quiz --- */
+        #quiz-content {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        #progress-bar {
+            width: 100%;
+            height: 4px;
+            background-color: var(--card-bg-color);
+            margin-bottom: 2rem;
+            border-radius: 2px;
+        }
+
+        #progress-bar-inner {
+            width: 0%;
+            height: 100%;
+            background-color: var(--accent-color);
+            transition: width 0.5s ease;
+        }
+        
+        #question-text {
+            font-size: 1.8rem;
+            font-weight: 500;
+            margin-bottom: 3rem;
+        }
+        
+        #answers-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .answer-card {
+            background-color: var(--card-bg-color);
+            border: 1px solid #333;
+            padding: 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            text-align: left;
+        }
+        
+        .answer-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+        }
+
+        /* --- Section Résultat --- */
+        #resultat-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .profile-title {
+            font-size: 1.5rem;
+            font-weight: 300;
+        }
+        
+        #board-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 2rem;
+            width: 100%;
+        }
+        
+        #board {
+            width: 320px;
+            min-width: 280px;
+        }
+        
+        .opening-details {
+            max-width: 400px;
+            text-align: left;
+        }
+        
+        .opening-details h3 {
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .opening-details p {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        #secondary-recommendations {
+            margin-top: 2rem;
+            width: 100%;
+            border-top: 1px solid #333;
+            padding-top: 2rem;
+        }
+        
+        #secondary-recommendations h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+        
+        .recommendations-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .secondary-card {
+            background-color: var(--card-bg-color);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #333;
+            min-width: 220px;
+        }
+
+        .secondary-card h4 {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            p { font-size: 1rem; }
+            .answer-card { padding: 1rem; }
+            #board { width: 100%; max-width: 320px; }
+            section { padding: 1rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <section id="accueil">
+        <div id="particles-js"></div>
+        <div class="content">
+            <h1>L'Architecture de l'Esprit</h1>
+            <p>Votre personnalité définit votre style de jeu. Découvrez l'ouverture d'échecs qui vous ressemble.</p>
+            <button id="start-btn" class="action-btn">Commencer l'analyse</button>
+        </div>
+    </section>
+
+    <section id="quiz" class="hidden">
+        <div id="quiz-content">
+            <div id="progress-bar"><div id="progress-bar-inner"></div></div>
+            <h2 id="question-text"></h2>
+            <div id="answers-container"></div>
+        </div>
+    </section>
+
+    <section id="resultat" class="hidden">
+        <div id="resultat-content">
+            <div>
+                <p class="profile-title" id="profile-title"></p>
+                <h1 id="opening-name"></h1>
+            </div>
+            <div id="board-container">
+                <div id="board"></div>
+                <div class="opening-details">
+                    <h3>Description</h3>
+                    <p id="opening-description"></p>
+                    <h3>Pourquoi elle vous correspond</h3>
+                    <p id="opening-reasoning"></p>
+                </div>
+            </div>
+            <div id="secondary-recommendations"></div>
+            <button id="redo-btn" class="action-btn">Refaire le test</button>
+        </div>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        particlesJS('particles-js', { "particles": { "number": { "value": 60, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#ffffff" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": false }, "size": { "value": 2, "random": true }, "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.4, "width": 1 }, "move": { "enable": true, "speed": 2, "direction": "none", "out_mode": "out" } }, "interactivity": { "events": { "onhover": { "enable": true, "mode": "grab" }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } } } }, "retina_detect": true });
+
+        const openingsDB = [{"id":1,"nom":"Partie Italienne","pour":"Blancs","tags":["Stratégique","Ouvert","Classique"],"description":"Une des plus anciennes ouvertures. Les Blancs développent rapidement leurs pièces, contrôlent le centre et préparent une attaque dans un cadre logique et structuré.","profilUtilisateur":"Idéale si vous aimez construire votre avantage pas à pas, avec des plans clairs et un jeu solide basé sur les principes fondamentaux.","fen":"r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3"},{"id":2,"nom":"Partie Espagnole (Ruy Lopez)","pour":"Blancs","tags":["Stratégique","Positionnel","Complexe"],"description":"Une ouverture sophistiquée où les Blancs exercent une pression durable. Elle mène à des parties riches et profondes.","profilUtilisateur":"Parfaite pour le joueur patient qui aime étouffer son adversaire lentement et apprécie les nuances positionnelles complexes.","fen":"r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3"},{"id":3,"nom":"Gambit du Roi","pour":"Blancs","tags":["Agressif","Tactique","Risqué"],"description":"Une ouverture romantique et audacieuse. Les Blancs sacrifient un pion pour lancer une attaque rapide et dévastatrice.","profilUtilisateur":"Pour les joueurs créatifs et combatifs qui aiment prendre des risques et qui privilégient l'initiative à la sécurité.","fen":"rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq - 0 2"},{"id":4,"nom":"Système de Londres","pour":"Blancs","tags":["Solide","Universel","Positionnel"],"description":"Un système fiable où les Blancs adoptent une configuration solide, quel que soit le plan des Noirs. Il est réputé pour sa sécurité.","profilUtilisateur":"Excellent choix si vous préférez éviter les longues études théoriques et cherchez un plan de jeu universel, solide et facile à comprendre.","fen":"rnbqkbnr/ppp1pppp/8/3p4/3P1B2/8/PP2PPPP/RN1QKBNR b KQkq - 1 2"},{"id":5,"nom":"Ouverture Anglaise","pour":"Blancs","tags":["Flexible","Hypermoderne","Positionnel"],"description":"Les Blancs contrôlent le centre depuis le flanc. Cette ouverture est très flexible et peut se transformer en de nombreuses autres structures.","profilUtilisateur":"Pour le joueur rusé et adaptable qui aime sortir des sentiers battus et comprendre la stratégie profonde.","fen":"rnbqkbnr/pppppppp/8/8/2P5/8/PP1PPPPP/RNBQKBNR b KQkq - 0 1"},{"id":6,"nom":"Défense Sicilienne","pour":"Noirs","tags":["Agressif","Tactique","Contre-attaque"],"description":"La réponse la plus combative à 1.e4. Les Noirs créent un déséquilibre immédiat pour se battre pour la victoire.","profilUtilisateur":"Si vous êtes un combattant dans l'âme, que vous n'avez pas peur de la complexité et que vous voulez jouer pour le gain avec les Noirs.","fen":"rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2"},{"id":7,"nom":"Défense Française","pour":"Noirs","tags":["Solide","Contre-attaque","Stratégique"],"description":"Une défense robuste. Les Noirs créent une chaîne de pions solide et attendent le bon moment pour lancer une contre-attaque.","profilUtilisateur":"Parfaite si vous êtes un joueur résilient et stratégique. Vous aimez avoir une position solide et frapper au moment opportun.","fen":"rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2"},{"id":8,"nom":"Défense Caro-Kann","pour":"Noirs","tags":["Solide","Défensif","Positionnel"],"description":"Réputée pour être l'une des défenses les plus sûres. Les Noirs visent une structure de pions saine et un développement sans faille.","profilUtilisateur":"Pour le joueur prudent et méthodique qui valorise la sécurité par-dessus tout et vise une technique supérieure en finale.","fen":"rnbqkbnr/pp1ppppp/2p5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2"},{"id":9,"nom":"Défense Est-Indienne","pour":"Noirs","tags":["Agressif","Hypermoderne","Contre-attaque"],"description":"Une défense ambitieuse où les Noirs permettent aux Blancs de construire un grand centre, pour mieux le détruire par la suite.","profilUtilisateur":"Idéale pour le joueur dynamique qui n'a pas peur de céder de l'espace pour créer des opportunités d'attaque explosives.","fen":"rnbq1rk1/ppppppbp/5np1/8/2PP4/2N5/PP2PPPP/R1BQKBNR w KQ - 2 5"}];
+
+        const quizQuestions = [ { question: "Face à un défi, quelle est votre approche ?", answers: [ { text: "J'analyse tout pour bâtir un plan solide à long terme.", tags: ["Stratégique", "Positionnel"] }, { text: "Je cherche une solution directe et percutante, même si elle est risquée.", tags: ["Agressif", "Tactique"] }, { text: "Je m'assure que ma base est sécurisée avant d'avancer.", tags: ["Solide", "Défensif"] } ]}, { question: "Qu'est-ce qui vous procure le plus de satisfaction dans un jeu ?", answers: [ { text: "Voir un plan complexe se dérouler parfaitement.", tags: ["Stratégique", "Flexible"] }, { text: "Surprendre l'adversaire avec une action brillante et inattendue.", tags: ["Tactique", "Agressif"] }, { text: "Frustrer systématiquement toutes les tentatives de mon adversaire.", tags: ["Solide", "Contre-attaque"] } ]}, { question: "Quel type d'environnement préférez-vous ?", answers: [ { text: "Structuré et prévisible, où je peux tout contrôler.", tags: ["Positionnel", "Classique"] }, { text: "Dynamique et chaotique, plein d'opportunités.", tags: ["Ouvert", "Tactique"] }, { text: "Flexible, où je peux m'adapter à la situation depuis les coulisses.", tags: ["Hypermoderne", "Flexible"] } ]} ];
+
+        const state = { currentQuestion: 0, userTags: [] };
+
+        const accueilSection = document.getElementById('accueil');
+        const quizSection = document.getElementById('quiz');
+        const resultatSection = document.getElementById('resultat');
+        const startBtn = document.getElementById('start-btn');
+        const redoBtn = document.getElementById('redo-btn');
+
+        startBtn.addEventListener('click', startQuiz);
+        redoBtn.addEventListener('click', resetQuiz);
+
+        function startQuiz() {
+            gsap.to(accueilSection, { opacity: 0, duration: 0.5, onComplete: () => {
+                accueilSection.classList.add('hidden');
+                quizSection.classList.remove('hidden');
+                gsap.from(quizSection, { opacity: 0, duration: 0.5 });
+                displayQuestion();
+            }});
+        }
+
+        function displayQuestion() {
+            const questionData = quizQuestions[state.currentQuestion];
+            const quizContent = document.getElementById('quiz-content');
+            
+            gsap.to(quizContent, { opacity: 0, duration: 0.3, onComplete: () => {
+                const progress = ((state.currentQuestion) / quizQuestions.length) * 100;
+                document.getElementById('progress-bar-inner').style.width = `${progress}%`;
+                
+                document.getElementById('question-text').textContent = questionData.question;
+                const answersContainer = document.getElementById('answers-container');
+                answersContainer.innerHTML = '';
+                questionData.answers.forEach(answer => {
+                    const card = document.createElement('div');
+                    card.className = 'answer-card';
+                    card.textContent = answer.text;
+                    card.addEventListener('click', () => selectAnswer(answer.tags));
+                    answersContainer.appendChild(card);
+                });
+
+                gsap.fromTo(quizContent, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 });
+            }});
+        }
+        
+        function selectAnswer(tags) {
+            state.userTags.push(...tags);
+            state.currentQuestion++;
+
+            if (state.currentQuestion < quizQuestions.length) {
+                displayQuestion();
+            } else {
+                document.getElementById('progress-bar-inner').style.width = `100%`;
+                calculateAndShowResult();
+            }
+        }
+
+        function calculateAndShowResult() {
+            const tagCounts = state.userTags.reduce((acc, tag) => {
+                acc[tag] = (acc[tag] || 0) + 1;
+                return acc;
+            }, {});
+            
+            const scoredOpenings = openingsDB.map(opening => {
+                const score = opening.tags.reduce((acc, tag) => acc + (tagCounts[tag] || 0), 0);
+                return { ...opening, score };
+            }).sort((a, b) => b.score - a.score);
+
+            const [mainOpening, ...secondaryOpenings] = scoredOpenings;
+            
+            gsap.to(quizSection, { opacity: 0, duration: 0.5, onComplete: () => {
+                quizSection.classList.add('hidden');
+                resultatSection.classList.remove('hidden');
+                
+                const primaryTag = Object.keys(tagCounts).sort((a,b) => tagCounts[b] - tagCounts[a])[0] || "Polyvalent";
+                
+                document.getElementById('profile-title').textContent = `Votre profil : Le ${primaryTag}`;
+                document.getElementById('opening-name').textContent = mainOpening.nom;
+                document.getElementById('opening-description').textContent = mainOpening.description;
+                document.getElementById('opening-reasoning').textContent = mainOpening.profilUtilisateur;
+                
+                // ================== LA CORRECTION EST ICI ==================
+                Chessboard('board', {
+                    position: mainOpening.fen,
+                    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' // <-- URL Corrigée et fiable
+                });
+                // =========================================================
+
+                const secondaryContainer = document.getElementById('secondary-recommendations');
+                secondaryContainer.innerHTML = `<h2>Autres suggestions pour vous</h2><div class="recommendations-grid"></div>`;
+                const grid = secondaryContainer.querySelector('.recommendations-grid');
+                
+                secondaryOpenings.slice(0, 3).forEach(op => {
+                    const card = document.createElement('div');
+                    card.className = 'secondary-card';
+                    card.innerHTML = `<h4>${op.nom}</h4><p style="font-size: 0.8rem; margin-top: 0.5rem;">Style : ${op.tags.join(', ')}</p>`;
+                    grid.appendChild(card);
+                });
+
+                gsap.from("#resultat-content > *", { opacity: 0, y: 20, duration: 0.6, stagger: 0.2 });
+            }});
+        }
+
+        function resetQuiz() {
+            gsap.to(resultatSection, { opacity: 0, duration: 0.5, onComplete: () => {
+                resultatSection.classList.add('hidden');
+                accueilSection.classList.remove('hidden');
+                
+                // Reset state
+                state.currentQuestion = 0;
+                state.userTags = [];
+                document.getElementById('progress-bar-inner').style.width = '0%';
+                document.getElementById('board').innerHTML = ''; // Vider l'échiquier
+                
+                gsap.from(accueilSection, { opacity: 0, duration: 0.5 });
+            }});
+        }
+    });
+    </script>
+</body>
+</html>
