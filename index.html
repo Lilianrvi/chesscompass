@@ -6,9 +6,7 @@
     <title>Chess Compass - L'Architecture de l'Esprit</title>
     
     <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
-    <link rel="icon" href="/favicon.png" type="image/png" />
-    <link rel="apple-touch-icon" href="favicon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    
     <style>
         /* --- Import des Polices --- */
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;500&display=swap');
@@ -73,6 +71,7 @@
         }
 
         .action-btn {
+            display: inline-block;
             background: none;
             border: 2px solid var(--accent-color);
             color: var(--accent-color);
@@ -83,12 +82,20 @@
             transition: all 0.3s ease;
             margin-top: 2rem;
             letter-spacing: 1px;
+            text-decoration: none;
         }
 
         .action-btn:hover {
             background-color: var(--accent-color);
             color: var(--bg-color);
             box-shadow: 0 0 25px rgba(192, 160, 98, 0.5);
+        }
+        
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
         }
 
         /* --- Section Accueil --- */
@@ -188,12 +195,21 @@
         
         .opening-details h3 {
             color: var(--accent-color);
+            margin-top: 1rem;
             margin-bottom: 0.5rem;
         }
 
         .opening-details p {
             font-size: 1rem;
             margin-bottom: 1rem;
+        }
+
+        #opening-followup {
+            font-family: monospace;
+            background-color: var(--card-bg-color);
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
         }
 
         #secondary-recommendations {
@@ -273,10 +289,15 @@
                     <p id="opening-description"></p>
                     <h3>Pourquoi elle vous correspond</h3>
                     <p id="opening-reasoning"></p>
+                    <h3>Suite possible</h3>
+                    <p id="opening-followup"></p>
                 </div>
             </div>
             <div id="secondary-recommendations"></div>
-            <button id="redo-btn" class="action-btn">Refaire le test</button>
+            <div class="buttons-container">
+                <a href="#" id="game-link" class="action-btn" target="_blank" rel="noopener noreferrer">Voir une partie célèbre</a>
+                <button id="redo-btn" class="action-btn">Refaire le test</button>
+            </div>
         </div>
     </section>
 
@@ -290,7 +311,18 @@
 
         particlesJS('particles-js', { "particles": { "number": { "value": 60, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#ffffff" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": false }, "size": { "value": 2, "random": true }, "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.4, "width": 1 }, "move": { "enable": true, "speed": 2, "direction": "none", "out_mode": "out" } }, "interactivity": { "events": { "onhover": { "enable": true, "mode": "grab" }, "resize": true }, "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } } } }, "retina_detect": true });
 
-        const openingsDB = [{"id":1,"nom":"Partie Italienne","pour":"Blancs","tags":["Stratégique","Ouvert","Classique"],"description":"Une des plus anciennes ouvertures. Les Blancs développent rapidement leurs pièces, contrôlent le centre et préparent une attaque dans un cadre logique et structuré.","profilUtilisateur":"Idéale si vous aimez construire votre avantage pas à pas, avec des plans clairs et un jeu solide basé sur les principes fondamentaux.","fen":"r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3"},{"id":2,"nom":"Partie Espagnole (Ruy Lopez)","pour":"Blancs","tags":["Stratégique","Positionnel","Complexe"],"description":"Une ouverture sophistiquée où les Blancs exercent une pression durable. Elle mène à des parties riches et profondes.","profilUtilisateur":"Parfaite pour le joueur patient qui aime étouffer son adversaire lentement et apprécie les nuances positionnelles complexes.","fen":"r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3"},{"id":3,"nom":"Gambit du Roi","pour":"Blancs","tags":["Agressif","Tactique","Risqué"],"description":"Une ouverture romantique et audacieuse. Les Blancs sacrifient un pion pour lancer une attaque rapide et dévastatrice.","profilUtilisateur":"Pour les joueurs créatifs et combatifs qui aiment prendre des risques et qui privilégient l'initiative à la sécurité.","fen":"rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq - 0 2"},{"id":4,"nom":"Système de Londres","pour":"Blancs","tags":["Solide","Universel","Positionnel"],"description":"Un système fiable où les Blancs adoptent une configuration solide, quel que soit le plan des Noirs. Il est réputé pour sa sécurité.","profilUtilisateur":"Excellent choix si vous préférez éviter les longues études théoriques et cherchez un plan de jeu universel, solide et facile à comprendre.","fen":"rnbqkbnr/ppp1pppp/8/3p4/3P1B2/8/PP2PPPP/RN1QKBNR b KQkq - 1 2"},{"id":5,"nom":"Ouverture Anglaise","pour":"Blancs","tags":["Flexible","Hypermoderne","Positionnel"],"description":"Les Blancs contrôlent le centre depuis le flanc. Cette ouverture est très flexible et peut se transformer en de nombreuses autres structures.","profilUtilisateur":"Pour le joueur rusé et adaptable qui aime sortir des sentiers battus et comprendre la stratégie profonde.","fen":"rnbqkbnr/pppppppp/8/8/2P5/8/PP1PPPPP/RNBQKBNR b KQkq - 0 1"},{"id":6,"nom":"Défense Sicilienne","pour":"Noirs","tags":["Agressif","Tactique","Contre-attaque"],"description":"La réponse la plus combative à 1.e4. Les Noirs créent un déséquilibre immédiat pour se battre pour la victoire.","profilUtilisateur":"Si vous êtes un combattant dans l'âme, que vous n'avez pas peur de la complexité et que vous voulez jouer pour le gain avec les Noirs.","fen":"rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2"},{"id":7,"nom":"Défense Française","pour":"Noirs","tags":["Solide","Contre-attaque","Stratégique"],"description":"Une défense robuste. Les Noirs créent une chaîne de pions solide et attendent le bon moment pour lancer une contre-attaque.","profilUtilisateur":"Parfaite si vous êtes un joueur résilient et stratégique. Vous aimez avoir une position solide et frapper au moment opportun.","fen":"rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2"},{"id":8,"nom":"Défense Caro-Kann","pour":"Noirs","tags":["Solide","Défensif","Positionnel"],"description":"Réputée pour être l'une des défenses les plus sûres. Les Noirs visent une structure de pions saine et un développement sans faille.","profilUtilisateur":"Pour le joueur prudent et méthodique qui valorise la sécurité par-dessus tout et vise une technique supérieure en finale.","fen":"rnbqkbnr/pp1ppppp/2p5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2"},{"id":9,"nom":"Défense Est-Indienne","pour":"Noirs","tags":["Agressif","Hypermoderne","Contre-attaque"],"description":"Une défense ambitieuse où les Noirs permettent aux Blancs de construire un grand centre, pour mieux le détruire par la suite.","profilUtilisateur":"Idéale pour le joueur dynamique qui n'a pas peur de céder de l'espace pour créer des opportunités d'attaque explosives.","fen":"rnbq1rk1/ppppppbp/5np1/8/2PP4/2N5/PP2PPPP/R1BQKBNR w KQ - 2 5"}];
+        // --- Base de données avec liens Chessgames.com stables ---
+        const openingsDB = [
+            { "id": 1, "nom": "Partie Italienne", "tags": ["Stratégique", "Ouvert", "Classique"], "description": "Les Blancs développent rapidement leurs pièces, contrôlent le centre et préparent une attaque dans un cadre logique.", "profilUtilisateur": "Idéale si vous aimez construire votre avantage pas à pas, avec des plans clairs et un jeu solide.", "fen": "r1bqkbnr/pppp1ppp/2n5/4p3/2B1P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3", "followUp": "4.c3 Cf6 5.d4 exd4 6.cxd4 Fb4+ 7.Cc3 Cxe4", "gameUrl": "https://www.chessgames.com/perl/chessgame?gid=1000006" },
+            { "id": 2, "nom": "Partie Espagnole", "tags": ["Stratégique", "Positionnel", "Complexe"], "description": "Une ouverture sophistiquée où les Blancs exercent une pression durable. Elle mène à des parties riches et profondes.", "profilUtilisateur": "Parfaite pour le joueur patient qui aime étouffer son adversaire lentement et apprécie les nuances positionnelles.", "fen": "r1bqkbnr/pppp1ppp/2n5/1B2p3/4P3/5N2/PPPP1PPP/RNBQK2R b KQkq - 3 3", "followUp": "3...a6 4.Fa4 Cf6 5.O-O Fe7 6.Te1 b5 7.Fb3 d6", "gameUrl": "https://www.chessgames.com/perl/chessgame?gid=1067279" },
+            { "id": 3, "nom": "Gambit du Roi", "tags": ["Agressif", "Tactique", "Risqué"], "description": "Une ouverture romantique et audacieuse. Les Blancs sacrifient un pion pour lancer une attaque rapide et dévastatrice.", "profilUtilisateur": "Pour les joueurs créatifs qui aiment prendre des risques et qui privilégient l'initiative à la sécurité.", "fen": "rnbqkbnr/pppp1ppp/8/4p3/4PP2/8/PPPP2PP/RNBQKBNR b KQkq - 0 2", "followUp": "2...exf4 3.Cf3 g5 4.h4 g4 5.Ce5 Cf6 6.Fc4", "gameUrl": "https://www.chessgames.com/perl/chessgame?gid=1018910" },
+            { "id": 4, "nom": "Système de Londres", "tags": ["Solide", "Universel", "Positionnel"], "description": "Un système fiable où les Blancs adoptent une configuration solide, quel que soit le plan des Noirs.", "profilUtilisateur": "Excellent choix si vous préférez éviter les longues études théoriques et cherchez un plan de jeu universel.", "fen": "rnbqkbnr/ppp1pppp/8/3p4/3P1B2/8/PP2PPPP/RN1QKBNR b KQkq - 1 2", "followUp": "2...Cf6 3.e3 e6 4.Cf3 c5 5.c3 Cc6 6.Nbd2", "gameUrl": "https://www.chessgames.com/perl/chessgame?gid=1710686" },
+            { "id": 5, "nom": "Ouverture Anglaise", "tags": ["Flexible", "Hypermoderne", "Positionnel"], "description": "Les Blancs contrôlent le centre depuis le flanc. Cette ouverture est très flexible et peut se transformer.", "profilUtilisateur": "Pour le joueur rusé et adaptable qui aime sortir des sentiers battus et comprendre la stratégie profonde.", "fen": "rnbqkbnr/pppppppp/8/8/2P5/8/PP1PPPPP/RNBQKBNR b KQkq - 0 1", "followUp": "1...Cf6 2.Cc3 e5 3.Cf3 Cc6 4.g3 Fb4 5.Fg2", "gameUrl": "https://www.chessgames.com/perl/chessgame?gid=1032338" },
+            { "id": 6, "nom": "Défense Sicilienne", "tags": ["Agressif", "Tactique", "Contre-attaque"], "description": "La réponse la plus combative à 1.e4. Les Noirs créent un déséquilibre immédiat pour se battre pour la victoire.", "profilUtilisateur": "Si vous êtes un combattant dans l'âme, que vous n'avez pas peur de la complexité et que vous voulez gagner avec les Noirs.", "fen": "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", "followUp": "2.Cf3 d6 3.d4 cxd4 4.Cxd4 Cf6 5.Cc3 a6", "gameUrl": "https://www.chessgames.com/perl/chessgame?gid=1008361" },
+            { "id": 7, "nom": "Défense Française", "tags": ["Solide", "Contre-attaque", "Stratégique"], "description": "Une défense robuste. Les Noirs créent une chaîne de pions solide et attendent le bon moment pour contre-attaquer.", "profilUtilisateur": "Parfaite si vous êtes un joueur résilient et stratégique qui aime avoir une position solide et frapper au moment opportun.", "fen": "rnbqkbnr/pppp1ppp/4p3/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", "followUp": "2.d4 d5 3.Cc3 Cf6 4.e5 Cfd7 5.f4 c5 6.Cf3", "gameUrl": "https://www.chessgames.com/perl/chessgame?gid=1032646" },
+            { "id": 8, "nom": "Défense Caro-Kann", "tags": ["Solide", "Défensif", "Positionnel"], "description": "Réputée pour être l'une des défenses les plus sûres. Les Noirs visent une structure de pions saine et sans faille.", "profilUtilisateur": "Pour le joueur prudent qui valorise la sécurité et qui aime gagner grâce à une technique supérieure en finale.", "fen": "rnbqkbnr/pp1ppppp/2p5/8/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2", "followUp": "2.d4 d5 3.Cc3 dxe4 4.Cxe4 Ff5 5.Cg3 Fg6 6.h4", "gameUrl": "https://www.chessgames.com/perl/chessgame?gid=1018555" },
+            { "id": 9, "nom": "Défense Est-Indienne", "tags": ["Agressif", "Hypermoderne", "Contre-attaque"], "description": "Une défense ambitieuse où les Noirs permettent aux Blancs de construire un grand centre, pour mieux le détruire.", "profilUtilisateur": "Idéale pour le joueur dynamique qui n'a pas peur de céder de l'espace pour créer des attaques explosives.", "fen": "rnbq1rk1/ppppppbp/5np1/8/2PP4/2N5/PP2PPPP/R1BQKBNR w KQ - 2 5", "followUp": "5...O-O 6.Fe2 e5 7.O-O Cc6 8.d5 Ce7", "gameUrl": "https://www.chessgames.com/perl/chessgame?gid=1008432" }
+        ];
 
         const quizQuestions = [ { question: "Face à un défi, quelle est votre approche ?", answers: [ { text: "J'analyse tout pour bâtir un plan solide à long terme.", tags: ["Stratégique", "Positionnel"] }, { text: "Je cherche une solution directe et percutante, même si elle est risquée.", tags: ["Agressif", "Tactique"] }, { text: "Je m'assure que ma base est sécurisée avant d'avancer.", tags: ["Solide", "Défensif"] } ]}, { question: "Qu'est-ce qui vous procure le plus de satisfaction dans un jeu ?", answers: [ { text: "Voir un plan complexe se dérouler parfaitement.", tags: ["Stratégique", "Flexible"] }, { text: "Surprendre l'adversaire avec une action brillante et inattendue.", tags: ["Tactique", "Agressif"] }, { text: "Frustrer systématiquement toutes les tentatives de mon adversaire.", tags: ["Solide", "Contre-attaque"] } ]}, { question: "Quel type d'environnement préférez-vous ?", answers: [ { text: "Structuré et prévisible, où je peux tout contrôler.", tags: ["Positionnel", "Classique"] }, { text: "Dynamique et chaotique, plein d'opportunités.", tags: ["Ouvert", "Tactique"] }, { text: "Flexible, où je peux m'adapter à la situation depuis les coulisses.", tags: ["Hypermoderne", "Flexible"] } ]} ];
 
@@ -304,35 +336,46 @@
 
         startBtn.addEventListener('click', startQuiz);
         redoBtn.addEventListener('click', resetQuiz);
-
+        
+        // --- CORRECTION DU BUG DE LA PAGE NOIRE ---
         function startQuiz() {
             gsap.to(accueilSection, { opacity: 0, duration: 0.5, onComplete: () => {
                 accueilSection.classList.add('hidden');
+                
+                // Pré-remplir le contenu du quiz avant de l'afficher
+                populateQuestionContent(state.currentQuestion);
+                
+                // Rendre la section du quiz visible mais transparente
                 quizSection.classList.remove('hidden');
-                gsap.from(quizSection, { opacity: 0, duration: 0.5 });
-                displayQuestion();
+                quizSection.style.opacity = 0;
+                
+                // Animer l'apparition de la section maintenant qu'elle a du contenu
+                gsap.to(quizSection, { opacity: 1, duration: 0.5 });
             }});
         }
 
-        function displayQuestion() {
-            const questionData = quizQuestions[state.currentQuestion];
-            const quizContent = document.getElementById('quiz-content');
-            
-            gsap.to(quizContent, { opacity: 0, duration: 0.3, onComplete: () => {
-                const progress = ((state.currentQuestion) / quizQuestions.length) * 100;
-                document.getElementById('progress-bar-inner').style.width = `${progress}%`;
-                
-                document.getElementById('question-text').textContent = questionData.question;
-                const answersContainer = document.getElementById('answers-container');
-                answersContainer.innerHTML = '';
-                questionData.answers.forEach(answer => {
-                    const card = document.createElement('div');
-                    card.className = 'answer-card';
-                    card.textContent = answer.text;
-                    card.addEventListener('click', () => selectAnswer(answer.tags));
-                    answersContainer.appendChild(card);
-                });
+        // Nouvelle fonction pour juste remplir le HTML d'une question
+        function populateQuestionContent(questionIndex) {
+            const questionData = quizQuestions[questionIndex];
+            const progress = ((questionIndex) / quizQuestions.length) * 100;
+            document.getElementById('progress-bar-inner').style.width = `${progress}%`;
+            document.getElementById('question-text').textContent = questionData.question;
+            const answersContainer = document.getElementById('answers-container');
+            answersContainer.innerHTML = '';
+            questionData.answers.forEach(answer => {
+                const card = document.createElement('div');
+                card.className = 'answer-card';
+                card.textContent = answer.text;
+                card.addEventListener('click', () => selectAnswer(answer.tags));
+                answersContainer.appendChild(card);
+            });
+        }
 
+        // Ancienne fonction, maintenant gère seulement les transitions ENTRE les questions
+        function displayQuestion() {
+            const quizContent = document.getElementById('quiz-content');
+            gsap.to(quizContent, { opacity: 0, y: -20, duration: 0.3, onComplete: () => {
+                populateQuestionContent(state.currentQuestion);
                 gsap.fromTo(quizContent, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 });
             }});
         }
@@ -350,11 +393,7 @@
         }
 
         function calculateAndShowResult() {
-            const tagCounts = state.userTags.reduce((acc, tag) => {
-                acc[tag] = (acc[tag] || 0) + 1;
-                return acc;
-            }, {});
-            
+            const tagCounts = state.userTags.reduce((acc, tag) => { acc[tag] = (acc[tag] || 0) + 1; return acc; }, {});
             const scoredOpenings = openingsDB.map(opening => {
                 const score = opening.tags.reduce((acc, tag) => acc + (tagCounts[tag] || 0), 0);
                 return { ...opening, score };
@@ -372,13 +411,20 @@
                 document.getElementById('opening-name').textContent = mainOpening.nom;
                 document.getElementById('opening-description').textContent = mainOpening.description;
                 document.getElementById('opening-reasoning').textContent = mainOpening.profilUtilisateur;
+                document.getElementById('opening-followup').textContent = mainOpening.followUp;
                 
-                // ================== LA CORRECTION EST ICI ==================
+                const gameLink = document.getElementById('game-link');
+                if (mainOpening.gameUrl) {
+                    gameLink.href = mainOpening.gameUrl;
+                    gameLink.style.display = 'inline-block';
+                } else {
+                    gameLink.style.display = 'none';
+                }
+                
                 Chessboard('board', {
                     position: mainOpening.fen,
-                    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png' // <-- URL Corrigée et fiable
+                    pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
                 });
-                // =========================================================
 
                 const secondaryContainer = document.getElementById('secondary-recommendations');
                 secondaryContainer.innerHTML = `<h2>Autres suggestions pour vous</h2><div class="recommendations-grid"></div>`;
@@ -391,7 +437,7 @@
                     grid.appendChild(card);
                 });
 
-                gsap.from("#resultat-content > *", { opacity: 0, y: 20, duration: 0.6, stagger: 0.2 });
+                gsap.from("#resultat-content > *", { opacity: 0, y: 20, duration: 0.6, stagger: 0.15 });
             }});
         }
 
@@ -400,11 +446,10 @@
                 resultatSection.classList.add('hidden');
                 accueilSection.classList.remove('hidden');
                 
-                // Reset state
                 state.currentQuestion = 0;
                 state.userTags = [];
                 document.getElementById('progress-bar-inner').style.width = '0%';
-                document.getElementById('board').innerHTML = ''; // Vider l'échiquier
+                document.getElementById('board').innerHTML = '';
                 
                 gsap.from(accueilSection, { opacity: 0, duration: 0.5 });
             }});
